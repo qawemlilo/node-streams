@@ -1,6 +1,6 @@
 ﻿Today I decided to clean up and organise files on my windows machine at work. This process involved deleting files I no longer have use for and grouping the rest in folders.  So I ended up with folders for audio, video, projects, ebooks, e.t.c.
 
-One of the folders that I came opened contained about 50 small mp3 files. Before deleting the files I had to play them just to make sure they didn't contain anything important. What do I know, turns out they are clips of a DHH(the ROR creator) interview - please don't ask me how they got to my computer.  He's quite an opinionated guy and I decided I wanted to keep the files. But 50 files? Wouldn't it be nice if I could glue them together into a single file? Well, being the hacker that I am I poped open my terminal and started writing a program.
+One of the folders that I opened contained about 50 small mp3 files. Before deleting the files I had to play them just to make sure they didn't contain anything important. What do I know, turns out they are clips of a DHH(the ROR creator) interview - please don't ask me how they got to my computer.  He's quite an opinionated guy and I decided I wanted to keep the files. But 50 files? Wouldn't it be nice if I could glue them together into a single file? Well, being the hacker that I am I popped open my terminal and started writing a program.
 
 I broke down the task to two main parts.
  1. Read and sort the files according to their sequence
@@ -54,36 +54,36 @@ Streams are a powerful feature in Node.js, they create a transportation system t
 
     var fs = require('fs'),
         files = fs.readdirSync('./files'),
-        chunks = [],
+        clips = [],
         stream,
         currentfile,
         dhh = fs.createWriteStream('./dhh-interview.mp3');
 
     // create an array with filenames (time)
     files.forEach(function (file) {
-        chunks.push(file.substring(0, 6));  
+        clips.push(file.substring(0, 6));  
     });
 
     // Sort
-    chunks.sort(function (a, b) {
+    clips.sort(function (a, b) {
         return a - b;
     });
 
     // recursive function
     function main() {
-        if (!chunks.length) {
+        if (!clips.length) {
             dhh.end("Done");
             return;
         }
     
-        currentfile = './files/' + chunks.shift() + '.mp3';
+        currentfile = './files/' + clips.shift() + '.mp3';
         stream = fs.createReadStream(currentfile);
     
         stream.pipe(dhh, {end: false});
     
         stream.on("end", function() {
             console.log(currentfile + ' appended');
-            streamer();        
+            main();        
         });
     }
 
@@ -92,7 +92,6 @@ Streams are a powerful feature in Node.js, they create a transportation system t
     
 That's it. Lastly I needed to run my programs.
 
-    node rename.js
-    node stream.js
+    node rename.js && node stream.js
 
-**Note** I have included a few files in my repo so that you be able to try this out.
+**Note** I have included a few files in my repo so that you can be able to try this out.
